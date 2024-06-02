@@ -1,18 +1,9 @@
 import { useEffect } from "react";
 import {Link} from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../redux/slices/productsSlice";
 import AllProduct from "../../components/AllProduct";
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const loading = useSelector((state) => state.status);
-  const products = useSelector((state) => state.products.posts);
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, []);
-
   
   return (
     <div>
