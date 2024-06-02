@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import axiosInstance from '../../../utils/axios';
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { AddProduct } from '../../redux/slices/productsSlice';
 import Cookies from "js-cookie"
+import { productShema } from '../../validations';
 
 const inputElement = [
     {
@@ -34,37 +35,17 @@ const SellProduct = () => {
     const dispatch = useDispatch();
     const productsData = useSelector((state) => state.products)
 
-    const handleFileUpload = async (e) => {
-        const ImageData = new FormData();
-        ImageData.append('photo', e.target.files?.[0]);
-        const token = Cookies.get('token');
-        try {
-            const res = await axiosInstance.post("product/addProductImage", ImageData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            console.log(res)
 
-            if (res.status === 200) {
-                setFileData(res.data)
-                toast.success(res.data.message)
-            }
-        } catch (err) {
-            console.error('Error uploading file', err);
-            toast.error("some error uploading file");
-        }
-    };
-
-    const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
+    const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue } =
         useFormik({
             initialValues: {
                 name: "",
                 description: "",
                 price: "",
                 quantity: "",
+                uploadfile: "",
             },
+            validationSchema: productShema,
             onSubmit: async (values, { resetForm }) => {
                 const payload = {
                     name: values.name,
@@ -86,14 +67,34 @@ const SellProduct = () => {
                     else {
                         toast.error(res.payload.message)
                     }
-
                 } catch (error) {
                     console.log(error)
                     toast.error("some error occured while processing!!")
                 }
             },
         });
-
+    const handleFileUpload = async (e, setFieldValue) => {
+        const ImageData = new FormData();
+        ImageData.append('photo', e.target.files?.[0]);
+        console.log(values)
+        const token = Cookies.get('token');
+        try {
+            const res = await axiosInstance.post("product/addProductImage", ImageData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (res.status === 200) {
+                setFileData(res.data)
+                setFieldValue('uploadfile', res.data.filename)
+                toast.success(res.data.message)
+            }
+        } catch (err) {
+            console.error('Error uploading file', err);
+            toast.error("some error uploading file");
+        }
+    };
 
     return (
         <>
@@ -111,11 +112,14 @@ const SellProduct = () => {
                                     <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                                 </svg>
                                 <span className="mt-2 text-base leading-normal">upload a file</span>
-                                <input type='file' className="hidden" required={true}
-                                    onChange={handleFileUpload} />
+                                <input type='file' name='uploadfile' className="hidden"
+                                    onChange={(e) => handleFileUpload(e, setFieldValue)} />
                             </label>
                         </div>
 
+                        {errors.uploadfile && touched.uploadfile ? (
+                            <div className="text-red-500 text-center mt-4 text-[12px] italic">{errors.uploadfile}</div>
+                        ) : null}
                     </div>
                 </div>
 
@@ -135,6 +139,9 @@ const SellProduct = () => {
                                     className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
                                     placeholder={input.placeHolder}
                                 />
+                                {errors[input.name] && touched[input.name] ? (
+                                    <div className="text-red-500 text-[12px] italic">{errors[input.name]}</div>
+                                ) : null}
                             </div>
                         ))}
                         <button
