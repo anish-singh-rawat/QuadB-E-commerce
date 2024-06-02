@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { login } from "../../redux/slices/loginSlice";
 import { loginSchema } from "../../../schema/ValidationsSchema";
+import Cookies from "js-cookie"
+import { toast } from "react-toastify";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const loginData = useSelector((state) => state.login)
+
   const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
     useFormik({
       initialValues: {
@@ -16,10 +20,20 @@ const Login = () => {
       onSubmit: async (values) => {
         const payload = {
           email: values.email,
-          password : values.password
+          password: values.password
         }
-       const data = await dispatch(login(payload));
-       console.log(data,'testing')
+        try {
+          const res = await dispatch(login(payload));
+        if (res.payload.success === true) {
+          Cookies.set('token', res.payload.token)
+          toast.success(res.payload.message)
+        }
+        else {
+          toast.error(res.payload.message)
+        }
+        } catch (error) {
+          console.log(error)
+        }
       },
     });
 
@@ -73,11 +87,18 @@ const Login = () => {
             </div>
             <div className="mt-4">
               <button
-              type="submit"
+                type="submit"
                 onClick={handleSubmit}
                 className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
               >
-                Login
+                {loginData.status == "loading" ? (
+                  <div className="flex justify-center items-center">
+                    <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
+                  </div>
+                ) : (
+                  "Login"
+                )}
+
               </button>
             </div>
           </div>

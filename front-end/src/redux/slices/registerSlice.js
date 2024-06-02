@@ -1,18 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../../utils/axios";
 
 const initialState = {
-  data: [],
+  data: null,
   status: "idle",
   error: "",
 };
 
-export const register = createAsyncThunk("login", async (payload) => {
-    console.log("payload inside slice======",payload)
-  const response = await axios.post("https://quadb-jcgo.onrender.com/auth/register",payload);
-  console.log(response);
-  return response?.data;
-});
+export const register = createAsyncThunk("auth/register", async (payload, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post("auth/register", payload);
+    return response.data;
+  } catch (err) {
+    if (err.response) {
+      return rejectWithValue(err.response.data);
+    } else if (err.request) {
+      return rejectWithValue({ message: "No response from server" });
+    } else {
+      return rejectWithValue({ message: err.message });
+    }
+  }
+}
+);
 
 const registerSlice = createSlice({
   name: "register",
@@ -26,12 +35,14 @@ const registerSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
+        state.error = "";
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.data = null;
+        state.error = action.payload;
       });
-  },
+  },  
 });
 
 export default registerSlice.reducer;
