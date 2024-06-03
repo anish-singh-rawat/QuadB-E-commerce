@@ -103,7 +103,7 @@ const SellProduct = () => {
                     <div>
                         {
                             fileData.filename &&
-                            <img src={`https://quadb-back-end-2.onrender.com/${fileData.imagePath}`} alt={fileData.originalname} className='h-56 w-full  xl:w-auto' />
+                            <img src={fileData.imagePath} alt={fileData.originalname} className='h-56 w-full  xl:w-auto' />
                         }
 
                         <div className='flex items-center justify-center mt-5'>
@@ -118,7 +118,7 @@ const SellProduct = () => {
                         </div>
 
                         {errors.uploadfile && touched.uploadfile ? (
-                            <div className="text-red-500 text-center mt-4 text-[12px] italic">{errors.uploadfile}</div>
+                            <div className="text-red-500 text-center mt-4 sm:text-2xl text-[12px] italic">{errors.uploadfile}</div>
                         ) : null}
                     </div>
                 </div>

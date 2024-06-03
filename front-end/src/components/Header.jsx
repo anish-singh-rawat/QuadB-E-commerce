@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSearch } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,8 +6,16 @@ import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip
 import Logout from '@mui/icons-material/Logout';
 import Cookies from "js-cookie"
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 const Header = () => {
+  const loginData = useSelector((state) => state.login.status)
+  const registerData = useSelector((state) => state.register.status)
+
+
+
+
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
   const open = Boolean(anchorEl);
@@ -25,17 +33,29 @@ const Header = () => {
     toast.success("logout successfully")
   }
 
+  let token = Cookies.get('token') 
+  let userData;
+  if(token){
+     userData  = jwtDecode(token);
+  }      
+  useEffect(()=>{
+   token = Cookies.get('token') 
+  },[loginData,registerData]);
+
   return (
     <>
       <header className="py-4 shadow-lg bg-white sticky top-0 z-50">
         <div className="flex flex-wrap items-center justify-between px-4 ">
           <div className='flex gap-10 rounded-3xl'>
-          <Link to={'/'} className="flex-shrink-0">
-            <img src="images/logo.svg" alt="Logo" className="w-32" />
+          <Link to={'/'} className="flex-shrink-0 text-2xl font-bold ">
+            <span className='text-red-500'>Quadb </span> Tech
           </Link>
-          <Link to={'sell-product'} className="flex-shrink-0 text-2xl font-bold ">
+          {
+            userData?.admin === true && 
+          <Link to={'/sell-product'} className="flex-shrink-0 text-2xl font-bold ">
             <span className='text-red-500'>Sell</span> Product
           </Link>
+          }
           </div>
 
           {/* header Searchbox  */}
