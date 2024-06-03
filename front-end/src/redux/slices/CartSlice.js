@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axios";
+import Cookies from "js-cookie"
 
 const initialState = {
   data: null,
@@ -14,7 +15,12 @@ export const handleCartAction = createAsyncThunk(
       let response;
       switch (actionType) {
         case "add":
-          response = await axiosInstance.post("cart/AddCartItem", payload);
+          const token = Cookies.get('token');
+          response = await axiosInstance.post("cart/AddCartItem", payload, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
           break;
         case "remove":
           response = await axiosInstance.delete("cart/deleteCartItem", { data: payload });

@@ -4,13 +4,13 @@ import { FaCartShopping } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import Logout from '@mui/icons-material/Logout';
-import Cookies from "js-cookie"
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-  const loginData = useSelector((state) => state.login.status)
+  const loginData = ((state) => state.login.status)
   const registerData = useSelector((state) => state.register.status)
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -37,7 +37,6 @@ const Header = () => {
     userData = jwtDecode(token);
   }
   useEffect(() => {
-    console.log(userData,'dd')
     token = Cookies.get('token')
   }, [loginData, registerData]);
 
