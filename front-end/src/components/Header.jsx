@@ -13,13 +13,13 @@ const Header = () => {
   const loginData = useSelector((state) => state.login.status)
   const registerData = useSelector((state) => state.register.status)
 
-
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -37,6 +37,7 @@ const Header = () => {
     userData = jwtDecode(token);
   }
   useEffect(() => {
+    console.log(userData,'dd')
     token = Cookies.get('token')
   }, [loginData, registerData]);
 
@@ -150,10 +151,17 @@ const Header = () => {
                   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                   <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
+                    <Avatar />
+                    <span className='text-red-500 font-bold'> name : </span> 
+                    <span className='text-gray-600 font-bold px-2'> {userData?.username} 
+                    </span>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
+                    <Avatar />
+                    <span className='text-red-500 font-bold'>email :  </span> 
+                    <span className='text-gray-600 font-bold px-2'>  {userData?.email} 
+                    </span>
+                     
                   </MenuItem>
                   <Divider />
                   <MenuItem onClick={handleLogout}>

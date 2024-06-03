@@ -1,72 +1,43 @@
-import React from 'react'
+import React, { useEffect,useSelector, useState } from 'react'
 import { FaStar } from "react-icons/fa";
-const productsElements = [
-  {
-    productImg: "https://picsum.photos/100/100",
-    productName: "COUPLE SOFA",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/200/200",
-    productName: "BED KING SIZE",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/300/300",
-    productName: "MATTRASS X",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/400/400",
-    productName: "Guyer Chair",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/500/500",
-    productName: "Rawat shert",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/600/600",
-    productName: "singh pent",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/700/700",
-    productName: "negi Chair",
-    productPrice: 45.09,
-  },
-  {
-    productImg: "https://picsum.photos/800/800",
-    productName: "rawat pent",
-    productPrice: 45.09,
-  },
-];
+import {useDispatch} from "react-redux"
+import { GetProduct } from '../redux/slices/getProducts';
 
 const AllProduct = () => {
+  const dispatch = useDispatch();
+  const [productsElements, setProductsElements] = useState([])
+
+  const getAllProduct = async ()=>{
+    const res = await dispatch(GetProduct());
+    setProductsElements(res.payload.products)
+    console.log(res.payload.products);
+  }
+  useEffect(()=>{
+    getAllProduct();
+  },[])
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-      {productsElements.map((product, index) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4  gap-6">
+      {productsElements.length>0 && productsElements.map((product) => (
         <div
-          key={index}
+          key={product._id}
           className="bg-white shadow rounded overflow-hidden group"
         >
           <div className="relative">
             <img
-              src={product.productImg}
-              alt="product 1"
-              className="w-full"
+              src={product.imagePath}
+              alt={product.filename}
+              className='w-full h-48'
             />
           </div>
           <div className="pt-4 pb-3 px-4">
             <a href="#">
               <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                {product.productName}
+                {product.name}
               </h4>
             </a>
             <div className="flex items-baseline mb-1 space-x-2">
               <p className="text-xl text-primary font-semibold">
-                ${product.productPrice}
+                ${product.price}
               </p>
               <p className="text-sm text-gray-400 line-through">$55.90</p>
             </div>
