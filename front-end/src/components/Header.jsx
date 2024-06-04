@@ -55,23 +55,29 @@ const Header = () => {
     <>
       <header className="py-4 shadow-lg bg-white sticky top-0 z-50">
         <div className="flex flex-wrap items-center justify-between px-4 ">
-          <div className='flex gap-10 rounded-3xl'>
+          <div className='flex gap-5 flex-wrap break-words sm:gap-10 rounded-3xl'>
             {
               userData?.id &&
-              <Link to={'/'} className="flex-shrink-0 text-[20px] sm:text-2xl font-bold ">
+              <Link to={'/'} className="flex-shrink-0 text-[20px] sm:text-xl md:text-2xl font-bold ">
                 <span className='text-red-500'>Quadb </span> Tech
               </Link>
             }
             {
               !userData?.id &&
-              <Link className="flex  sm:text-2xl text-[20px] font-bold break-words flex-wrap">
+              <Link className="flex sm:text-xl md:text-2xl text-[20px] font-bold break-words flex-wrap">
                 <span className='text-red-500'>welcom to QuadB </span> Tech group
               </Link>
             }
             {
               userData?.admin === true &&
-              <Link to={'/sell-product'} className="flex-shrink-0 text-[20px] sm:text-2xl font-bold ">
+              <Link to={'/sell-product'} className="flex-shrink-0 text-[20px] sm:text-xl md:text-2xl font-bold ">
                 <span className='text-red-500'>Sell</span> Product
+              </Link>
+            }
+            {
+              userData?.admin === true && 
+              <Link to={'/admin-product'} className="flex-shrink-0 text-[20px] sm:text-xl md:text-2xl font-bold ">
+                <span className='text-red-500'>admin</span> Product
               </Link>
             }
           </div>

@@ -72,7 +72,7 @@ const AllProduct = () => {
       {productsElements?.length > 0 && productsElements?.map((product) => (
         <div
           key={product?._id}
-          className="bg-white shadow rounded overflow-hidden group"
+          className="bg-white shadow-2xl rounded overflow-hidden group"
         >
           <div className="relative">
             <img

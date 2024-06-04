@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import SellProduct from '../pages/SellProduct/SellProduct';
 import { jwtDecode } from "jwt-decode";
+import AdminProducts from '../pages/adminProducts/adminProducts';
 
 export default function Router() {
   const loginData = useSelector((state) => state.login.status)
@@ -48,6 +49,8 @@ export default function Router() {
       <Route path="/cart" element={protectedToken?.id ? <Cart /> : <Navigate to="/" />} />
       <Route path="/sell-product" element={protectedToken?.id ? (userData?.admin === true ? <SellProduct /> : <Navigate to="/" />) : <Navigate to="/login" />} />
 
+      <Route path="/admin-product" element={protectedToken?.id ? (userData?.admin === true ? <AdminProducts /> : <Navigate to="/" />) : <Navigate to="/login" />} />
+      
       <Route path="*" element={<PagesNotfound />} />
     </Routes>
   );
