@@ -7,6 +7,9 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const AllProduct = () => {
   const [productsElements, setProductsElements] = useState([])
@@ -15,10 +18,7 @@ const AllProduct = () => {
   const loginData = useSelector((state) => state.login.status)
   const registerData = useSelector((state) => state.register.status)
   const cartData = useSelector((state) => state.cart)
-  console.log(cartData)
-
-
-
+  const productData = useSelector((state) => state.getProducts)
 
   const getAllProduct = async () => {
     const res = await dispatch(GetProduct());
@@ -38,8 +38,8 @@ const AllProduct = () => {
       productId: _id,
       price: price,
       userId: userData.id,
-      itemName : name ,
-      productImage : imagePath
+      itemName: name,
+      productImage: imagePath
     }
     try {
       const res = await dispatch(handleCartAction({ actionType: "add", payload }));
@@ -55,11 +55,20 @@ const AllProduct = () => {
   useEffect(() => {
     token = Cookies.get('token')
   }, [loginData, registerData]);
+  
   useEffect(() => {
     getAllProduct();
   }, [])
+
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4  gap-6">
+      {productData?.status === "loading" &&
+        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      }
       {productsElements?.length > 0 && productsElements?.map((product) => (
         <div
           key={product?._id}
@@ -94,13 +103,13 @@ const AllProduct = () => {
               </div>
             </div>
           </div>
-          <div onClick={() => AddToCart(product?._id, product?.price,product?.imagePath,product?.name )}
+          <div onClick={() => AddToCart(product?._id, product?.price, product?.imagePath, product?.name)}
             className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
             {
-            addItemId == product?._id &&  cartData?.status == "loading" ? 
-              <div className="flex justify-center items-center">
-                <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
-              </div> : <div> Add to cart</div>
+              addItemId == product?._id && cartData?.status == "loading" ?
+                <div className="flex justify-center items-center">
+                  <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
+                </div> : <div> Add to cart</div>
             }
           </div>
         </div>

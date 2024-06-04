@@ -22,7 +22,7 @@ export const GetProduct = createAsyncThunk("product/AllProduct", async (payload,
 
 });
 
-const productsSlice = createSlice({
+const GetProductsSlice = createSlice({
     name: "posts",
     initialState,
     reducers: {},
@@ -42,4 +42,4 @@ const productsSlice = createSlice({
     },
 });
 
-export default productsSlice.reducer;
+export default GetProductsSlice.reducer;
