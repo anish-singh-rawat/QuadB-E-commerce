@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../../utils/axios';
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -6,6 +6,11 @@ import { useFormik } from "formik";
 import { AddProduct } from '../../redux/slices/productsSlice';
 import Cookies from "js-cookie"
 import { productShema } from '../../validations';
+import { useParams , useNavigate} from 'react-router-dom';
+import { singleProduct } from '../../redux/slices/SignleProduct';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { updateCartDetails } from '../../redux/slices/updateProduct';
 
 const inputElement = [
     {
@@ -34,9 +39,10 @@ const SellProduct = () => {
     const [fileData, setFileData] = useState([])
     const dispatch = useDispatch();
     const productsData = useSelector((state) => state.products)
+    const updateditemData = useSelector((state) => state.updateProduct)
+    const navigate = useNavigate();
 
-
-    const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue } =
+    const { setValues, values, errors, touched,resetForm, handleChange, handleBlur, handleSubmit, setFieldValue } =
         useFormik({
             initialValues: {
                 name: "",
@@ -58,7 +64,6 @@ const SellProduct = () => {
                 };
                 try {
                     const res = await dispatch(AddProduct(payload));
-                    console.log(res, 'this is an payload')
                     resetForm();
                     setFileData([]);
                     if (res.payload.success === true) {
@@ -73,6 +78,7 @@ const SellProduct = () => {
                 }
             },
         });
+
     const handleFileUpload = async (e, setFieldValue) => {
         const ImageData = new FormData();
         ImageData.append('photo', e.target.files?.[0]);
@@ -86,6 +92,7 @@ const SellProduct = () => {
                 },
             });
             if (res.status === 200) {
+                console.log(res.data, 'dddddddddd')
                 setFileData(res.data)
                 setFieldValue('uploadfile', res.data.filename)
                 toast.success(res.data.message)
@@ -96,8 +103,59 @@ const SellProduct = () => {
         }
     };
 
+    const singleProductData = useSelector((state) => state.singleProduct)
+    const { id } = useParams();
+
+    const getProductsdetails = async () => {
+        const { payload } = await dispatch(singleProduct(id))
+        const { name, filename, description, imagePath, price, quantity } = payload.product;
+        setValues({
+            name: name,
+            price: price,
+            uploadfile: imagePath,
+            quantity: quantity,
+            description: description
+        });
+        setFileData({
+            imagePath: imagePath,
+            filename: filename,
+        })
+    }
+
+    const updateDetails = async () => {
+        const payloadData = {
+            name: values?.name,
+            description: values?.description,
+            price: values?.price,
+            quantity: values?.quantity,
+            productId : id
+        }
+        const {payload} = await dispatch(updateCartDetails(payloadData))
+        if(payload.success === true) {
+            toast.success(payload?.message)
+            resetForm();
+            setFileData([]);
+            navigate('/')
+        }else{
+            toast.error(payload?.message)
+        }
+    }
+
+    useEffect(() => {
+        if (id) {
+            getProductsdetails();
+        }
+    }, [id])
+
     return (
         <>
+            {
+                singleProductData.status == "loading" &&
+                <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={true}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            }
             <div className="w-full flex flex-col xl:flex-row lg:flex-col md:flex-col justify-between items-center">
                 <div className="flex w-1/2 items-center mt-10 xl:mt-0 mx-7 justify-center bg-grey-lighter">
                     <div>
@@ -107,12 +165,12 @@ const SellProduct = () => {
                         }
 
                         <div className='flex items-center justify-center mt-5'>
-                            <label className="w-64 flex flex-col  items-center px-4 py-6 bg-red-500 text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer ">
+                            <label className={`w-64 flex flex-col  items-center px-4 py-6 bg-red-500 text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue ${id ? "cursor-not-allowed" : "cursor-pointer"}  `}>
                                 <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                                 </svg>
                                 <span className="mt-2 text-base leading-normal">upload a file</span>
-                                <input type='file' name='uploadfile' className="hidden"
+                                <input disabled={id ? true : false} type='file' name='uploadfile' className="hidden"
                                     onChange={(e) => handleFileUpload(e, setFieldValue)} />
                             </label>
                         </div>
@@ -148,12 +206,13 @@ const SellProduct = () => {
                             type="submit"
                             className="block w-full py-2 text-center bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium mt-4"
                         >
-                            {productsData.status == "loading" ? (
+                            {(productsData.status == "loading" || updateditemData.status == "loading") ? (
                                 <div className="flex justify-center items-center">
                                     <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
                                 </div>
                             ) : (
-                                <div onClick={handleSubmit}>upload product</div>
+                                id ? <div onClick={updateDetails}> update details </div> :
+                                    <div onClick={handleSubmit}>upload product</div>
                             )}
 
                         </button>

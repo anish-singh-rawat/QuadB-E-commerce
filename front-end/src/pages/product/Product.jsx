@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom"
-import AllProduct from "../../components/AllProduct"
 import { useEffect } from "react";
 import { singleProduct } from "../../redux/slices/SignleProduct";
 import { useDispatch, useSelector } from "react-redux"
@@ -8,7 +7,6 @@ const Product = () => {
     const dispatch = useDispatch();
 
     const singleProductData = useSelector((state) => state.singleProduct)
-    console.log(singleProductData,'ssss')
     const getsingleProductData = async () => {
         await dispatch(singleProduct(id))
     }
@@ -16,8 +14,7 @@ const Product = () => {
         getsingleProductData();
     }, [id])
     return (
-        <div>
-            <div className="container grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            <div className="container grid grid-cols-1 mt-7 mb-7 md:grid-cols-2 gap-6 py-4">
                 <div>
                     <img src={singleProductData?.data?.product?.imagePath} alt="product" className="w-full" />
                 </div>
@@ -46,9 +43,9 @@ const Product = () => {
                     </p>
 
                     <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
-                        <Link
+                        <Link to={'/'}
                             className="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition">
-                            Add to cart
+                            back to home
                         </Link>
                         <Link
                             className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"> order now
@@ -56,10 +53,6 @@ const Product = () => {
                     </div>
                 </div>
             </div>
-            <div className="container pb-6 mt-6 px-3">
-                <AllProduct />
-            </div>
-        </div>
     )
 }
 

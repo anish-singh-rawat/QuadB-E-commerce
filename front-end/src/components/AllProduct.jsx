@@ -93,11 +93,11 @@ const AllProduct = () => {
             </div>
           </div>
           <div className="pt-4 pb-3 px-4">
-            <a href="#">
+            <Link to={`/product/${product?._id}`} className='cursor-pointer'>
               <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
                 {product?.name}
               </h4>
-            </a>
+            </Link>
             <div className="flex items-baseline mb-1 space-x-2">
               <p className="text-xl text-primary font-semibold">
                 ${product?.price}
@@ -115,7 +115,7 @@ const AllProduct = () => {
             </div>
           </div>
           <div onClick={() => AddToCart(product?._id, product?.price, product?.imagePath, product?.name)}
-            className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+            className="cursor-pointer block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
             {
               addItemId == product?._id && cartData?.status == "loading" ?
                 <div className="flex justify-center items-center">

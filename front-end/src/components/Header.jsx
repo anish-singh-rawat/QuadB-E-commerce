@@ -80,7 +80,7 @@ const Header = () => {
             {
               userData?.admin === true && 
               <Link to={'/admin-product'} className="flex-shrink-0 text-[20px] sm:text-xl md:text-2xl font-bold ">
-                <span className='text-red-500'>admin</span> Product
+                <span className='text-red-500'>admin</span> pannel
               </Link>
             }
           </div>

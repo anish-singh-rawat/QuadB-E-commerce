@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { deleteCartItem } from '../../redux/slices/deleteProduct';
-import { Link } from 'react-router-dom';
 import NoITemFound from '../../components/NoITemFound';
+import { Link } from 'react-router-dom';
 
 const AdminProducts = () => {
     const [productsElements, setProductsElements] = useState([])
@@ -89,7 +89,7 @@ const AdminProducts = () => {
                         </div>
                         <div className='flex gap-4'>
                             <div onClick={() => removeItem(product?._id)}
-                                className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+                                className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary cursor-pointer transition">
                                 {
                                     addItemId == product?._id && deleteProducts?.status == "loading" ?
                                         <div className="flex justify-center items-center">
@@ -99,16 +99,10 @@ const AdminProducts = () => {
                                 }
                             </div>
 
-                            <div onClick={() => AddToCart(product?._id, product?.price, product?.imagePath, product?.name)}
+                            <Link to={`/update-product/${product?._id}`}
                                 className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
-                                {
-                                    addItemId == product?._id && cartData?.status == "loading" ?
-                                        <div className="flex justify-center items-center">
-                                            <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
-                                        </div>
-                                        : <div> update item </div>
-                                }
-                            </div>
+                                update details 
+                            </Link>
                         </div>
 
                     </div>
@@ -117,7 +111,7 @@ const AdminProducts = () => {
 
             {
                 (cartData.status == "succeeded" && productsElements?.length < 1) &&
-                <NoITemFound title="Admin product"/>
+                <NoITemFound title="Admin pannel"/>
             }
         </>
 
