@@ -45,7 +45,7 @@ export default function Router() {
       <Route path="/" element={protectedToken?.id ? <Home /> : <Navigate to="/login" />} />
       <Route path="/login" element={protectedToken?.id ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={protectedToken?.id ? <Navigate to="/" /> : <Register />} />
-      <Route path="/product" element={protectedToken?.id ? <Product /> : <Navigate to="/" />} />
+      <Route path="/product/:id" element={protectedToken?.id ? <Product /> : <Navigate to="/" />} />
       <Route path="/cart" element={protectedToken?.id ? <Cart /> : <Navigate to="/" />} />
       <Route path="/sell-product" element={protectedToken?.id ? (userData?.admin === true ? <SellProduct /> : <Navigate to="/" />) : <Navigate to="/login" />} />
 

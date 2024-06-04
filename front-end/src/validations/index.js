@@ -30,20 +30,24 @@ export const loginSchema = Yup.object().shape({
     .max(20, "Password cannot be more than 20 characters"),
 });
 
-
-export const productShema = Yup.object().shape({
+export const productShema  = Yup.object().shape({
   name: Yup.string()
     .required("Name is required")
     .min(4, "Name must be at least 4 characters")
     .max(20, "Name cannot be more than 20 characters"),
   description: Yup.string()
-    .min(20, "Name must be at least 20 characters")
-    .max(200, "Name cannot be more than 200 characters")
-    .required("description is required"),
-  price: Yup.string()
-    .required("price is required"),
+    .required("Description is required")
+    .min(100, "Description must be at least 100 characters")
+    .max(200, "Description cannot be more than 200 characters"),
+  price: Yup.number()
+    .required("Price is required")
+    .positive("Price must be a positive number")
+    .moreThan(0, "Price must be greater than 0"),
   uploadfile: Yup.string()
-    .required("uploadfile is required"),
-  quantity: Yup.string()
-    .required("quantity is required")
+    .required("Upload file is required"),
+  quantity: Yup.number()
+    .required("Quantity is required")
+    .positive("Quantity must be a positive number")
+    .moreThan(0, "Quantity must be greater than 0")
 });
+

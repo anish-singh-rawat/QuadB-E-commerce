@@ -1,19 +1,35 @@
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import AllProduct from "../../components/AllProduct"
-
+import { useEffect } from "react";
+import { singleProduct } from "../../redux/slices/SignleProduct";
+import { useDispatch, useSelector } from "react-redux"
 const Product = () => {
+    const { id } = useParams();
+    const dispatch = useDispatch();
+
+    const singleProductData = useSelector((state) => state.singleProduct)
+    console.log(singleProductData,'ssss')
+    const getsingleProductData = async () => {
+        await dispatch(singleProduct(id))
+    }
+    useEffect(() => {
+        getsingleProductData();
+    }, [id])
     return (
         <div>
             <div className="container grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
                 <div>
-                    <img src="images/products/product1.jpg" alt="product" className="w-full" />
+                    <img src={singleProductData?.data?.product?.imagePath} alt="product" className="w-full" />
                 </div>
                 <div>
-                    <h2 className="text-3xl font-medium uppercase mb-2">Italian L Shape Sofa</h2>
+                    <h2 className="text-3xl font-medium uppercase mb-2">{singleProductData?.data?.product?.name}</h2>
                     <div className="space-y-2">
                         <p className="space-x-2">
                             <span className="text-gray-800 font-semibold">Brand: </span>
                             <span className="text-gray-600">Apex</span>
+                        </p>
+                        <p className="space-x-2">
+                            <span className="text-gray-800 font-semibold">quantity : {singleProductData?.data?.product?.quantity} </span>
                         </p>
                         <p className="space-x-2">
                             <span className="text-gray-800 font-semibold">Category: </span>
@@ -21,13 +37,13 @@ const Product = () => {
                         </p>
                     </div>
                     <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
-                        <p className="text-xl text-primary font-semibold">$45.00</p>
+                        <p className="text-xl text-primary font-semibold">${singleProductData?.data?.product?.price}.00</p>
                         <p className="text-base text-gray-400 line-through">$55.00</p>
                     </div>
 
-                    <p className="mt-4 text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos eius eum
-                        reprehenderit dolore vel mollitia optio consequatur hic asperiores inventore suscipit, velit
-                        consequuntur, voluptate doloremque iure necessitatibus adipisci magnam porro.</p>
+                    <p className="mt-4 text-gray-600">
+                    {singleProductData?.data?.product?.description}
+                    </p>
 
                     <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
                         <Link
@@ -40,8 +56,7 @@ const Product = () => {
                     </div>
                 </div>
             </div>
-
-            <div className="px-3 lg:px-14">
+            <div className="container pb-6 mt-6 px-3">
                 <AllProduct />
             </div>
         </div>

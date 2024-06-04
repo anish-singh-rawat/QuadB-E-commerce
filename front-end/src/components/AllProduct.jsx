@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { FaStar } from "react-icons/fa";
 import { useDispatch } from "react-redux"
 import { GetProduct } from '../redux/slices/getProducts';
 import { handleCartAction } from '../redux/slices/CartSlice';
@@ -9,6 +8,8 @@ import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Link } from 'react-router-dom';
+import { FaSearch, FaStar } from "react-icons/fa";
 
 
 const AllProduct = () => {
@@ -55,7 +56,7 @@ const AllProduct = () => {
   useEffect(() => {
     token = Cookies.get('token')
   }, [loginData, registerData]);
-  
+
   useEffect(() => {
     getAllProduct();
   }, [])
@@ -80,6 +81,16 @@ const AllProduct = () => {
               alt={product?.filename}
               className='w-full h-48'
             />
+            <div
+              className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
+              justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
+            >
+              <Link to={`/product/${product?._id}`}
+                className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                title="view product">
+                <FaSearch />
+              </Link>
+            </div>
           </div>
           <div className="pt-4 pb-3 px-4">
             <a href="#">
