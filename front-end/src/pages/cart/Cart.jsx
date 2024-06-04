@@ -1,131 +1,103 @@
+import React, { useEffect, useState } from 'react'
+import { FaStar } from "react-icons/fa";
+import { useDispatch } from "react-redux"
+import { toast } from "react-toastify";
+import Cookies from "js-cookie"
+import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
+import { handleCartAction } from '../../redux/slices/CartSlice';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+
 const Cart = () => {
-  return (
-    <div>
-    <div className="container grid md:grid-cols-12 pb-16 pt-6 gap-6">
+    const [productsElements, setProductsElements] = useState([])
+    const [removeItemId, setRemovedItemId] = useState(null)
 
-        <div className=" w-full md:col-span-8 border border-gray-200 p-4 rounded">
-            <h3 className="text-lg font-medium capitalize mb-4">Checkout</h3>
-            <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="first-name" className="text-gray-600">First Name <span
-                                className="text-primary">*</span></label>
-                        <input type="text" name="first-name" id="first-name" className="input-box"/>
-                    </div>
-                    <div>
-                        <label htmlFor="last-name" className="text-gray-600">Last Name <span
-                                className="text-primary">*</span></label>
-                        <input type="text" name="last-name" id="last-name" className="input-box"/>
-                    </div>
-                </div>
-                <div>
-                    <label htmlFor="company" className="text-gray-600">Company</label>
-                    <input type="text" name="company" id="company" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="region" className="text-gray-600">Country/Region</label>
-                    <input type="text" name="region" id="region" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="address" className="text-gray-600">Street address</label>
-                    <input type="text" name="address" id="address" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="city" className="text-gray-600">City</label>
-                    <input type="text" name="city" id="city" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="phone" className="text-gray-600">Phone number</label>
-                    <input type="text" name="phone" id="phone" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="email" className="text-gray-600">Email address</label>
-                    <input type="email" name="email" id="email" className="input-box"/>
-                </div>
-                <div>
-                    <label htmlFor="company" className="text-gray-600">Company</label>
-                    <input type="text" name="company" id="company" className="input-box"/>
-                </div>
-            </div>
+    const dispatch = useDispatch();
+    const cartData = useSelector((state) => state.cart)
+    console.log(cartData, 'sss')
+    let token = Cookies.get('token')
+    let userData;
+    if (token) {
+        userData = jwtDecode(token);
+    }
 
+    const getAllProduct = async () => {
+        const res = await dispatch(handleCartAction({ actionType: "get", payload: { id: userData.id } }));
+        setProductsElements(res?.payload?.cart?.cartItems)
+    }
+
+    const removeToCart = async (productId) => {
+        const payload = {
+            productId: productId,
+            userId: userData.id
+        }
+        setRemovedItemId(productId)
+        const res = await dispatch(handleCartAction({ actionType: "remove", payload }));
+        if (res?.error?.message === "Rejected") {
+            toast.error(res.payload.message)
+        }
+    }
+    useEffect(() => {
+        getAllProduct();
+        token = Cookies.get('token')
+    }, [cartData.data?.cart?.cartItems.length]);
+
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4  gap-6">
+            {cartData.status === "loading" &&
+                <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={true}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            }
+            {productsElements?.length > 0 && productsElements?.map((product) => (
+                <div
+                    key={product?.productId}
+                    className="bg-white shadow rounded overflow-hidden group py-5 px-5"
+                >
+                    <div className="relative">
+                        <img
+                            src={product?.productImage}
+                            alt={product?.itemName}
+                            className='w-full h-48'
+                        />
+                    </div>
+                    <div className="pt-4 pb-3 px-4">
+                        <a href="#">
+                            <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
+                                {product?.itemName}
+                            </h4>
+                        </a>
+                        <div className="flex items-baseline mb-1 space-x-2">
+                            <p className="text-xl text-primary font-semibold">
+                                ${product?.price}
+                            </p>
+                            <p className="text-sm text-gray-400 line-through">$55.90</p>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="flex gap-1 text-sm text-yellow-400">
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                    <span key={index}>
+                                        <FaStar />
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div onClick={() => removeToCart(product?.productId)}
+                        className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+                        {
+                            removeItemId == product?.productId && cartData?.status == "loading" ?
+                                <div className="flex justify-center items-center">
+                                    <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
+                                </div> :
+                                <div> remove to cart</div>
+                        }
+                    </div>
+                </div>
+            ))}
         </div>
-
-        <div className="w-full  md:col-span-4 border border-gray-200 p-4 rounded">
-            <h4 className="text-gray-800 text-lg mb-4 font-medium uppercase">order summary</h4>
-            <div className="space-y-2">
-                <div className="flex justify-between">
-                    <div>
-                        <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-                        <p className="text-sm text-gray-600">Size: M</p>
-                    </div>
-                    <p className="text-gray-600">
-                        x3
-                    </p>
-                    <p className="text-gray-800 font-medium">$320</p>
-                </div>
-                <div className="flex justify-between">
-                    <div>
-                        <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-                        <p className="text-sm text-gray-600">Size: M</p>
-                    </div>
-                    <p className="text-gray-600">
-                        x3
-                    </p>
-                    <p className="text-gray-800 font-medium">$320</p>
-                </div>
-                <div className="flex justify-between">
-                    <div>
-                        <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-                        <p className="text-sm text-gray-600">Size: M</p>
-                    </div>
-                    <p className="text-gray-600">
-                        x3
-                    </p>
-                    <p className="text-gray-800 font-medium">$320</p>
-                </div>
-                <div className="flex justify-between">
-                    <div>
-                        <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-                        <p className="text-sm text-gray-600">Size: M</p>
-                    </div>
-                    <p className="text-gray-600">
-                        x3
-                    </p>
-                    <p className="text-gray-800 font-medium">$320</p>
-                </div>
-            </div>
-
-            <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
-                <p>subtotal</p>
-                <p>$1280</p>
-            </div>
-
-            <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
-                <p>shipping</p>
-                <p>Free</p>
-            </div>
-
-            <div className="flex justify-between text-gray-800 font-medium py-3 uppercas">
-                <p className="font-semibold">Total</p>
-                <p>$1280</p>
-            </div>
-
-            <div className="flex items-center mb-4 mt-2">
-                <input type="checkbox" name="aggrement" id="aggrement"
-                    className="text-primary focus:ring-0 rounded-sm cursor-pointer w-3 h-3"/>
-                <label htmlFor="aggrement" className="text-gray-600 ml-3 cursor-pointer text-sm">I agree to the <a href="#"
-                        className="text-primary">terms & conditions</a></label>
-            </div>
-
-            <a href="#"
-                className="block w-full py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium">Place
-                order</a>
-        </div>
-
-    </div>
-   
-    </div>
-  )
+    )
 }
-
-export default Cart
+export default Cart;

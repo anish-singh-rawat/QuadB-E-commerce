@@ -4,7 +4,6 @@ import productsSlice from "./slices/productsSlice";
 import loginSlice from "./slices/loginSlice";
 import registerSlice from "./slices/registerSlice";
 import CartSlice from "./slices/CartSlice";
-
 const store = configureStore({
   reducer: {
     products:productsSlice,

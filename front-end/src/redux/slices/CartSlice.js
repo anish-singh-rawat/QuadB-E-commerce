@@ -15,19 +15,34 @@ export const handleCartAction = createAsyncThunk(
       let response;
       switch (actionType) {
         case "add":
-          const token = Cookies.get('token');
+          const Addtoken = Cookies.get('token');
           response = await axiosInstance.post("cart/AddCartItem", payload, {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${Addtoken}`
             }
           });
           break;
-        case "remove":
-          response = await axiosInstance.delete("cart/deleteCartItem", { data: payload });
-          break;
+
         case "get":
-          response = await axiosInstance.get(`cart/getCartItem/${payload.id}`);
+          const Gettoken = Cookies.get('token');
+          response = await axiosInstance.get(`cart/getCartItem/${payload.id}`, {
+            headers: {
+              'Authorization': `Bearer ${Gettoken}`
+            }
+          });
           break;
+
+        case "remove":
+          const accessToken = Cookies.get('token');
+          response = await axiosInstance.delete("cart/deleteCartItem", {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            },
+            data: payload 
+          });
+          break;
+
+          
         default:
           throw new Error("Invalid action type");
       }
@@ -65,15 +80,4 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-
-
-
-// To add an item to the cart
-// dispatch(handleCartAction({ actionType: "add", payload: item }));
-
-// To remove an item from the cart
-// dispatch(handleCartAction({ actionType: "remove", payload: { id: itemId } }));
-
-// To get items from the cart
-// dispatch(handleCartAction({ actionType: "get", payload: { id: userId } }));
 

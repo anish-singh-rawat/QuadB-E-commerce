@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 
 const AllProduct = () => {
   const [productsElements, setProductsElements] = useState([])
+  const [addItemId, setAddItemId] = useState(null)
   const dispatch = useDispatch();
   const loginData = useSelector((state) => state.login.status)
   const registerData = useSelector((state) => state.register.status)
@@ -32,6 +33,7 @@ const AllProduct = () => {
 
 
   const AddToCart = async (_id, price, imagePath, name) => {
+    setAddItemId(_id)
     const payload = {
       productId: _id,
       price: price,
@@ -41,7 +43,6 @@ const AllProduct = () => {
     }
     try {
       const res = await dispatch(handleCartAction({ actionType: "add", payload }));
-      console.log(res, 'ddddd')
       if (res.payload.success === true) {
         toast.success(res?.payload?.message)
       } else {
@@ -96,7 +97,7 @@ const AllProduct = () => {
           <div onClick={() => AddToCart(product?._id, product?.price,product?.imagePath,product?.name )}
             className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
             {
-              cartData?.status == "loading" ? 
+            addItemId == product?._id &&  cartData?.status == "loading" ? 
               <div className="flex justify-center items-center">
                 <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
               </div> : <div> Add to cart</div>
