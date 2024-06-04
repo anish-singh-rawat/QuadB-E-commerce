@@ -8,11 +8,14 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
+import { handleCartAction } from '../redux/slices/CartSlice';
+import { useDispatch } from "react-redux"
 
 const Header = () => {
   const loginData = ((state) => state.login.status)
   const registerData = useSelector((state) => state.register.status)
-
+  const cartData = useSelector((state) => state.cart)
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
   const open = Boolean(anchorEl);
@@ -36,9 +39,17 @@ const Header = () => {
   if (token) {
     userData = jwtDecode(token);
   }
+
+  const getAllProduct = async () => {
+   dispatch(handleCartAction({ actionType: "get", payload: { id: userData.id } }));
+}
   useEffect(() => {
     token = Cookies.get('token')
   }, [loginData, registerData]);
+
+  useEffect(()=>{
+    getAllProduct();
+  },[cartData.data?.cart?.cartItems.length])
 
   return (
     <>
@@ -96,7 +107,7 @@ const Header = () => {
                 </div>
                 <div className="text-xs leading-3">Cart</div>
                 <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-                  2
+                 {cartData.data?.cart?.cartItems.length}
                 </div>
               </Link>
               <div>
