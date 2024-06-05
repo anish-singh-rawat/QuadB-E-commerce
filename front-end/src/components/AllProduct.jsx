@@ -114,14 +114,21 @@ const AllProduct = () => {
               </div>
             </div>
           </div>
-          <div onClick={() => AddToCart(product?._id, product?.price, product?.imagePath, product?.name)}
-            className="cursor-pointer block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
-            {
-              addItemId == product?._id && cartData?.status == "loading" ?
-                <div className="flex justify-center items-center">
-                  <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
-                </div> : <div> Add to cart</div>
-            }
+          <div className='flex gap-4'>
+            <div onClick={() => AddToCart(product?._id, product?.price, product?.imagePath, product?.name)}
+              className="cursor-pointer block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+              {
+                addItemId == product?._id && cartData?.status == "loading" ?
+                  <div className="flex justify-center items-center">
+                    <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
+                  </div> : <div> Add to cart</div>
+              }
+            </div>
+
+            <Link to={`/buy-product/${product?._id}`}
+              className="cursor-pointer block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+              shop now
+            </Link>
           </div>
         </div>
       ))}

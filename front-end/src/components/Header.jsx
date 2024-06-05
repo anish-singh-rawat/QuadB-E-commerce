@@ -45,13 +45,11 @@ const Header = () => {
 
   useEffect(() => {
     token = Cookies.get('token')
-    console.log(' got token 1')
     if (token !== undefined && token !== null) { 
-      console.log(' two tokens found ')
       getCartItem();
     } 
   }, [cartData.data?.cart?.cartItems?.length, cartData.data?.cart?.cartItems?.__v, token, registerData?.data?.success == true, cartData?.data?.success == true])
-  console.log(cartData)
+
   return (
     <>
       <header className="py-4 shadow-lg bg-white sticky top-0 z-50">
@@ -87,12 +85,9 @@ const Header = () => {
           {
             userData?.id &&
             <div className="relative flex mt-4 w-96 md:w-96 md:mt-0 md:ml-4 order-last md:order-none">
-              <input
-                type="text"
-                name="search"
-                id="search"
-                className="w-full md:w-96 border border-primary border-r-0  py-3 pr-3 rounded-l-md focus:outline-none"
-                placeholder="Search for products..."
+              <input type="text" name="search" id="search"
+                className="w-full  md:w-96 border border-primary border-r-0  py-3 pr-3 rounded-l-md focus:ring-0 focus:border-primary" 
+                placeholder="Search products by name.."
               />
               <button className="bg-primary border border-primary text-white px-8 rounded-r-md hover:bg-transparent hover:text-primary transition">
                 <FaSearch />
