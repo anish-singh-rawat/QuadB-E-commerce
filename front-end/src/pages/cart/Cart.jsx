@@ -64,7 +64,7 @@ const Cart = () => {
                     justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
                             >
                                 <Link
-                                    to={`/product/${product._id}`}
+                                    to={`/product/${product.productId}`}
                                     className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
                                     title="view product"
                                 >

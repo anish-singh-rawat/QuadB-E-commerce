@@ -57,7 +57,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="py-4 shadow-lg bg-white sticky top-0 z-50">
+      <header className="py-4 bg-gray-100 shadow-xl sticky top-0 z-50">
         <div className="flex flex-wrap items-center justify-between px-4 ">
           <div className='flex gap-5 flex-wrap break-words sm:gap-10 rounded-3xl'>
             {
