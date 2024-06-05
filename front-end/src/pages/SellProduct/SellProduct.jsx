@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { AddProduct } from '../../redux/slices/productsSlice';
 import Cookies from "js-cookie"
-import { productShema } from '../../validations';
+import { productSchema } from '../../validations';
 import { useParams , useNavigate} from 'react-router-dom';
 import { singleProduct } from '../../redux/slices/SignleProduct';
 import Backdrop from '@mui/material/Backdrop';
@@ -51,7 +51,7 @@ const SellProduct = () => {
                 quantity: "",
                 uploadfile: "",
             },
-            validationSchema: productShema,
+            validationSchema: productSchema,
             onSubmit: async (values, { resetForm }) => {
                 const payload = {
                     name: values.name,
@@ -82,7 +82,6 @@ const SellProduct = () => {
     const handleFileUpload = async (e, setFieldValue) => {
         const ImageData = new FormData();
         ImageData.append('photo', e.target.files?.[0]);
-        console.log(values)
         const token = Cookies.get('token');
         try {
             const res = await axiosInstance.post("product/addProductImage", ImageData, {

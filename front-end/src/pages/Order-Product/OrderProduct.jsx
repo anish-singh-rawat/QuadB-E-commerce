@@ -1,14 +1,69 @@
 import { useEffect } from "react";
 import { singleProduct } from "../../redux/slices/SignleProduct";
 import { useDispatch, useSelector } from "react-redux"
-import { Link, useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
+import { useFormik } from "formik";
+import { placeOderProduct } from "../../redux/slices/PlaceOrder";
+import { placeOderSchema } from "../../validations";
+import Cookies from "js-cookie"
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 const OrderProduct = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
-
+    let token = Cookies.get('token')
+    const navigate = useNavigate();
+    let userData;
+    if (token) {
+        userData = jwtDecode(token);
+    }
     const singleProductData = useSelector((state) => state.singleProduct)
-    console.log(singleProductData)
+    const loginData = useSelector((state) => state.login.status)
+    const registerData = useSelector((state) => state.register.status)
+
+    const { errors, values, touched, handleChange, handleBlur, handleSubmit } =
+        useFormik({
+            initialValues: {
+                firstName: "",
+                lastName: "",
+                StreetAddress: "",
+                City: "",
+                CountryOrRegion: "",
+                PhoneNumber: "",
+                EmailAddress: ""
+            },
+            validationSchema: placeOderSchema,
+            onSubmit: async (values) => {
+                const payload = {
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    StreetAddress: values.StreetAddress,
+                    City: values.City,
+                    CountryOrRegion: values.CountryOrRegion,
+                    PhoneNumber: values.PhoneNumber,
+                    EmailAddress: values.EmailAddress   ,
+                    ProductId: id,
+                    userId: userData?.id,
+                };
+                try {
+                    console.log(payload, 'that is payload')
+
+                    // const res = await dispatch(placeOderProduct(payload));
+                    // if (res.payload.success === true) {
+                    // resetForm();
+                    //     toast.success(res.payload.message)
+                    // navigate('/')
+                    // }
+                    // else {
+                    //     toast.error(res.payload.message)
+                    // }
+                } catch (error) {
+                    console.log(error)
+                    toast.error("some error occured while processing!!")
+                }
+            },
+        });
 
     const getsingleProductData = async () => {
         dispatch(singleProduct(id))
@@ -19,53 +74,99 @@ const OrderProduct = () => {
             getsingleProductData();
         }
     }, [id])
-    
+
+    useEffect(() => {
+        token = Cookies.get('token')
+    }, [loginData, registerData]);
+
+
     return (
         <>
             <div>
                 <div className="container grid md:grid-cols-12 pb-16 pt-6 gap-6">
                     <div className="shadow-slate-900 shadow-2xl w-full md:col-span-8 border border-gray-200 p-4 rounded">
                         <h3 className="text-lg text-red-600 font-bold capitalize mb-4">Checkout</h3>
-                        <div className="space-y-4">
+                        <div className={`${Object.keys(errors).length > 0 ? "space-y-1" : "space-y-4"}`}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="first-name" className="text-gray-600">First Name <span
                                         className="text-primary">*</span></label>
-                                    <input type="text" name="first-name" id="first-name" className="input-box" />
+                                    <input type="text" onChange={handleChange}
+                                        onBlur={handleBlur} value={values.firstName}
+                                        name="firstName" id="first-name" className="input-box" />
+                                    {errors.firstName && touched.firstName && (
+                                        <div className="text-red-500 text-[12px] italic">
+                                            {errors.firstName}</div>
+                                    )}
                                 </div>
                                 <div>
                                     <label htmlFor="last-name" className="text-gray-600">Last Name <span
                                         className="text-primary">*</span></label>
-                                    <input type="text" name="last-name" id="last-name" className="input-box" />
+                                    <input type="text" id="last-name" className="input-box" onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name={"lastName"} />
+                                    {errors.lastName && touched.lastName && (
+                                        <div className="text-red-500 text-[12px] italic">
+                                            {errors.lastName}</div>
+                                    )}
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="region" className="text-gray-600">Country/Region</label>
-                                    <input type="text" name="region" id="region" className="input-box" />
+                                    <input type="text" onChange={handleChange}
+                                        onBlur={handleBlur} value={values.CountryOrRegion}
+                                        name={"CountryOrRegion"} id="region" className="input-box" />
+                                    {errors.CountryOrRegion && touched.CountryOrRegion && (
+                                        <div className="text-red-500 text-[12px] italic">
+                                            {errors.CountryOrRegion}</div>
+                                    )}
                                 </div>
                                 <div>
                                     <label htmlFor="address" className="text-gray-600">Street address</label>
-                                    <input type="text" name="address" id="address" className="input-box" />
+                                    <input type="text" onChange={handleChange}
+                                        onBlur={handleBlur} value={values.StreetAddress}
+                                        name={"StreetAddress"} id="address" className="input-box" />
+                                    {errors.StreetAddress && touched.StreetAddress && (
+                                        <div className="text-red-500 text-[12px] italic">
+                                            {errors.StreetAddress}</div>
+                                    )}
                                 </div>
                             </div>
-
                             <div>
                                 <label htmlFor="city" className="text-gray-600">City</label>
-                                <input type="text" name="city" id="city" className="input-box" />
+                                <input type="text" onChange={handleChange}
+                                    onBlur={handleBlur} value={values.City}
+                                    name={"City"} id="city" className="input-box" />
+                                {errors.City && touched.City && (
+                                    <div className="text-red-500 text-[12px] italic">
+                                        {errors.City}</div>
+                                )}
                             </div>
                             <div>
                                 <label htmlFor="phone" className="text-gray-600">Phone number</label>
-                                <input type="text" name="phone" id="phone" className="input-box" />
+                                <input type="text" onChange={handleChange}
+                                    onBlur={handleBlur} value={values.PhoneNumber}
+                                    name={"PhoneNumber"} id="phone" className="input-box" />
+                                {errors.PhoneNumber && touched.PhoneNumber && (
+                                    <div className="text-red-500 text-[12px] italic">
+                                        {errors.PhoneNumber}</div>
+                                )}
                             </div>
                             <div>
                                 <label htmlFor="email" className="text-gray-600">Email address</label>
-                                <input type="email" name="email" id="email" className="input-box" />
+                                <input type="email" onChange={handleChange}
+                                    onBlur={handleBlur} value={values.EmailAddress}
+                                    name={"EmailAddress"} id="email" className="input-box" />
+                                {errors.EmailAddress && touched.EmailAddress && (
+                                    <div className="text-red-500 text-[12px] italic">
+                                        {errors.EmailAddress}</div>
+                                )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="w-full shadow-slate-900 shadow-2xl md:col-span-4 border border-gray-200 p-4 rounded">
+                    <div className="w-full shadow-slate-900 shadow-2xl md:col-span-4 border border-gray-200 p-4 rounded ">
                         <h4 className=" text-red-600 font-bold text-lg mb-4 uppercase">
                             order summary</h4>
                         <div>
@@ -101,10 +202,10 @@ const OrderProduct = () => {
                             <p>{singleProductData?.data?.product?.price}$</p>
                         </div>
 
-                        <buttton
-                            className="block w-full py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary cursor-pointer transition font-medium">Place
+                        <button type="submit" onClick={handleSubmit}
+                            className={`${Object.keys(errors).length > 0 && "mt-7"} block w-full py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary cursor-pointer transition font-medium`}>Place
                             order
-                        </buttton>
+                        </button>
                     </div>
 
                 </div>

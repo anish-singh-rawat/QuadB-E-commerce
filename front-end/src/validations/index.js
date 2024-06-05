@@ -30,7 +30,7 @@ export const loginSchema = Yup.object().shape({
     .max(20, "Password cannot be more than 20 characters"),
 });
 
-export const productShema  = Yup.object().shape({
+export const productSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name is required")
     .min(4, "Name must be at least 4 characters")
@@ -51,3 +51,30 @@ export const productShema  = Yup.object().shape({
     .moreThan(0, "Quantity must be greater than 0")
 });
 
+export const placeOderSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .required("first Name is required")
+    .min(4, "Name must be at least 4 characters")
+    .max(20, "Name cannot be more than 20 characters"),
+  lastName: Yup.string()
+    .required("lastName is required")
+    .min(4, "lastName must be at least 4 characters")
+    .max(20, "lastName cannot be more than 20 characters"),
+  StreetAddress: Yup.string()
+    .required("StreetAddress is required")
+    .min(3, "Street address must be at least 3 characters")
+    .max(30, "Street address cannot be more than 30 characters"),
+  City: Yup.string()
+    .required("City is required")
+    .min(5, "City must be at least 5 characters")
+    .max(30, "City cannot be more than 30 characters"),
+  CountryOrRegion: Yup.string()
+    .required("City is required")
+    .min(3, "Description must be at least 3 characters")
+    .max(30, "Description cannot be more than 30 characters"),
+  PhoneNumber: Yup.number()
+    .required("Phone number is required"),
+  EmailAddress: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});
