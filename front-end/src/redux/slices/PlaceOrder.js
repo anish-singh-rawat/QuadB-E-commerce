@@ -1,14 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axios";
+import Cookies from "js-cookie"
+
 const initialState = {
   posts: [],
   status: "idle",
   error: "",
 };
 
-export const placeOderProduct = createAsyncThunk("product/placeOderProduct", async (payload, { rejectWithValue }) => {
+export const placeOderProduct = createAsyncThunk("order/placeOrder", async (payload, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.post("product/addProductData", payload,{
+    const accessToken = Cookies.get('token');
+    const response = await axiosInstance.post("order/placeOrder", payload,{
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+    },
     });
     return response?.data;
   } catch (err) {
@@ -23,7 +29,7 @@ export const placeOderProduct = createAsyncThunk("product/placeOderProduct", asy
 
 });
 
-const productsSlice = createSlice({
+const placeOderProductSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {},
@@ -43,4 +49,4 @@ const productsSlice = createSlice({
   },
 });
 
-export default productsSlice.reducer;
+export default placeOderProductSlice.reducer;

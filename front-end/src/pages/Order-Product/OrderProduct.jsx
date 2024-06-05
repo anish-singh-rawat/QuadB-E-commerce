@@ -21,7 +21,9 @@ const OrderProduct = () => {
     const singleProductData = useSelector((state) => state.singleProduct)
     const loginData = useSelector((state) => state.login.status)
     const registerData = useSelector((state) => state.register.status)
+    const oderProduct = useSelector((state) => state.placeOderProduct.status)
 
+    
     const { errors, values, touched, handleChange, handleBlur, handleSubmit } =
         useFormik({
             initialValues: {
@@ -47,20 +49,19 @@ const OrderProduct = () => {
                     userId: userData?.id,
                 };
                 try {
-                    console.log(payload, 'that is payload')
-
-                    // const res = await dispatch(placeOderProduct(payload));
-                    // if (res.payload.success === true) {
-                    // resetForm();
-                    //     toast.success(res.payload.message)
-                    // navigate('/')
-                    // }
-                    // else {
-                    //     toast.error(res.payload.message)
-                    // }
+                    const res = await dispatch(placeOderProduct(payload));
+                    if (res.payload.success === true) {
+                        toast.success(res.payload.message)
+                    }
+                    else {
+                        toast.error(res.payload.message)
+                    }
                 } catch (error) {
                     console.log(error)
                     toast.error("some error occured while processing!!")
+                }
+                finally {
+                    navigate('/')
                 }
             },
         });
@@ -86,7 +87,7 @@ const OrderProduct = () => {
                 <div className="container grid md:grid-cols-12 pb-16 pt-6 gap-6">
                     <div className="shadow-slate-900 shadow-2xl w-full md:col-span-8 border border-gray-200 p-4 rounded">
                         <h3 className="text-lg text-red-600 font-bold capitalize mb-4">Checkout</h3>
-                        <div className={`${Object.keys(errors).length > 0 ? "space-y-1" : "space-y-4"}`}>
+                        <div className={`space-y-4`}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="first-name" className="text-gray-600">First Name <span
@@ -202,10 +203,19 @@ const OrderProduct = () => {
                             <p>{singleProductData?.data?.product?.price}$</p>
                         </div>
 
-                        <button type="submit" onClick={handleSubmit}
+                        <div>
+                        {
+                            oderProduct == "loading" ? 
+                            <div className="flex justify-center items-center">
+                            <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-orange-600"></div>
+                            </div>
+                            : 
+                            <button type="submit" onClick={handleSubmit}
                             className={`${Object.keys(errors).length > 0 && "mt-7"} block w-full py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary cursor-pointer transition font-medium`}>Place
                             order
                         </button>
+                        }
+                        </div>
                     </div>
 
                 </div>

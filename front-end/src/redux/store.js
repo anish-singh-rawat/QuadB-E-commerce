@@ -8,6 +8,8 @@ import CartSlice from "./slices/CartSlice";
 import deleteProductSlice from "./slices/deleteProduct"
 import singleProductSlice from "./slices/SignleProduct"
 import updateItemDetailSlice from "./slices/updateProduct"
+import placeOderProductSlice from "./slices/PlaceOrder";
+
 const store = configureStore({
   reducer: {
     products: productsSlice,
@@ -17,7 +19,8 @@ const store = configureStore({
     cart: CartSlice,
     deleteProducts : deleteProductSlice,
     singleProduct : singleProductSlice,
-    updateProduct : updateItemDetailSlice
+    updateProduct : updateItemDetailSlice,
+    placeOderProduct : placeOderProductSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(thunk),
