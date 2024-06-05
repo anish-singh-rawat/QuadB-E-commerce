@@ -74,7 +74,7 @@ const cartSlice = createSlice({
       })
       .addCase(handleCartAction.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload;
+        state.data = action.payload;
       });
   },
 });

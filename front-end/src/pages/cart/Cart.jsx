@@ -108,7 +108,7 @@ const Cart = () => {
                 ))}
             </div>
             {
-                (cartData.status == "succeeded" && productsElements?.length < 1) &&
+                ((cartData.status == "succeeded" || cartData.status == "failed"  )&& (productsElements?.length < 1 || productsElements?.length == undefined )) &&
                 <NoITemFound title="Cart"/>
             }   
         </>

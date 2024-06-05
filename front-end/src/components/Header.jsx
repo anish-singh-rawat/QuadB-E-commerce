@@ -12,8 +12,7 @@ import { handleCartAction } from '../redux/slices/CartSlice';
 import { useDispatch } from "react-redux"
 
 const Header = () => {
-  const loginData = useSelector((state) => state.login.status)
-  const registerData = useSelector((state) => state.register.status)
+  const registerData = useSelector((state) => state.register)
   const cartData = useSelector((state) => state.cart)
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -22,7 +21,7 @@ const Header = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -34,26 +33,25 @@ const Header = () => {
     toast.success("logout successfully")
   }
 
+  const getCartItem = async () => {
+    dispatch(handleCartAction({ actionType: "get", payload: { id: userData?.id } }));
+  }
+
   let token = Cookies.get('token')
   let userData;
   if (token) {
     userData = jwtDecode(token);
   }
 
-  const getAllProduct = async () => {
-      dispatch(handleCartAction({ actionType: "get", payload: { id: userData?.id } }));
-}
   useEffect(() => {
     token = Cookies.get('token')
-  }, [loginData, registerData]);
-
-  useEffect(()=>{
-    token = Cookies.get('token')
-    if (token) {
-    getAllProduct();
-    }
-  },[cartData.data?.cart?.cartItems.length])
-  
+    console.log(' got token 1')
+    if (token !== undefined && token !== null) { 
+      console.log(' two tokens found ')
+      getCartItem();
+    } 
+  }, [cartData.data?.cart?.cartItems?.length, cartData.data?.cart?.cartItems?.__v, token, registerData?.data?.success == true, cartData?.data?.success == true])
+  console.log(cartData)
   return (
     <>
       <header className="py-4 shadow-lg bg-white sticky top-0 z-50">
@@ -78,7 +76,7 @@ const Header = () => {
               </Link>
             }
             {
-              userData?.admin === true && 
+              userData?.admin === true &&
               <Link to={'/admin-product'} className="flex-shrink-0 text-[20px] sm:text-xl md:text-2xl font-bold ">
                 <span className='text-red-500'>admin</span> pannel
               </Link>
@@ -116,7 +114,7 @@ const Header = () => {
                 </div>
                 <div className="text-xs leading-3">Cart</div>
                 <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-                 {cartData.status == "succeeded" && cartData.data?.cart?.cartItems?.length}
+                  {cartData.data?.cart?.cartItems?.length  ? cartData.data?.cart?.cartItems?.length : 0}
                 </div>
               </Link>
               <div>
@@ -171,16 +169,16 @@ const Header = () => {
                 >
                   <MenuItem onClick={handleClose}>
                     <Avatar />
-                    <span className='text-red-500 font-bold'> name : </span> 
-                    <span className='text-gray-600 font-bold px-2'> {userData?.username} 
+                    <span className='text-red-500 font-bold'> name : </span>
+                    <span className='text-gray-600 font-bold px-2'> {userData?.username}
                     </span>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
                     <Avatar />
-                    <span className='text-red-500 font-bold'>email :  </span> 
-                    <span className='text-gray-600 font-bold px-2'>  {userData?.email} 
+                    <span className='text-red-500 font-bold'>email :  </span>
+                    <span className='text-gray-600 font-bold px-2'>  {userData?.email}
                     </span>
-                     
+
                   </MenuItem>
                   <Divider />
                   <MenuItem onClick={handleLogout}>
@@ -193,33 +191,33 @@ const Header = () => {
               </div>
             </div>
           }
-            {
-              !userData?.id &&
-          <div>
+          {
+            !userData?.id &&
+            <div>
               <ul className="flex flex-wrap items-center mb-6 text-lg font-medium text-gray-500 sm:mb-0 dark:text-gray-800">
-              <li>
-                <Link to={'/'} className="hover:underline me-4 md:me-6">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link to={'/'} className="hover:underline me-4 md:me-6">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to={'/'} className="hover:underline me-4 md:me-6">
-                  Licensing
-                </Link>
-              </li>
-              <li>
-                <Link to={'/'} className="hover:underline">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-            }
+                <li>
+                  <Link to={'/'} className="hover:underline me-4 md:me-6">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link to={'/'} className="hover:underline me-4 md:me-6">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to={'/'} className="hover:underline me-4 md:me-6">
+                    Licensing
+                  </Link>
+                </li>
+                <li>
+                  <Link to={'/'} className="hover:underline">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          }
         </div>
       </header>
     </>
