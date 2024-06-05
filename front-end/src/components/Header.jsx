@@ -10,14 +10,17 @@ import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
 import { handleCartAction } from '../redux/slices/CartSlice';
 import { useDispatch } from "react-redux"
+import SearchModal from './SearchModal';
 
 const Header = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const registerData = useSelector((state) => state.register)
   const cartData = useSelector((state) => state.cart)
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -42,6 +45,8 @@ const Header = () => {
   if (token) {
     userData = jwtDecode(token);
   }
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {
     token = Cookies.get('token')
@@ -84,14 +89,16 @@ const Header = () => {
           {/* header Searchbox  */}
           {
             userData?.id &&
-            <div className="relative flex mt-4 w-96 md:w-96 md:mt-0 md:ml-4 order-last md:order-none">
-              <input type="text" name="search" id="search"
+            <div  className="relative flex mt-4 w-96 md:w-96 md:mt-0 md:ml-4 order-last md:order-none">
+              <input type="text" name="search" id="search" 
                 className="w-full  md:w-96 border border-primary border-r-0  py-3 pr-3 rounded-l-md focus:ring-0 focus:border-primary" 
-                placeholder="Search products by name.."
+                placeholder="Search products by name.." onChange={handleOpenModal}
+                onClick={handleOpenModal} onKeyPress={handleOpenModal}
               />
-              <button className="bg-primary border border-primary text-white px-8 rounded-r-md hover:bg-transparent hover:text-primary transition">
+              <button  onClick={handleOpenModal} className="bg-primary border border-primary text-white px-8 rounded-r-md hover:bg-transparent hover:text-primary transition">
                 <FaSearch />
               </button>
+              <SearchModal openModal={openModal} handleCloseModal={handleCloseModal}/>
             </div>
           }
 
