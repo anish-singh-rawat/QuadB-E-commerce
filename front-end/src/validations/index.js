@@ -32,13 +32,13 @@ export const loginSchema = Yup.object().shape({
 
 export const productSchema = Yup.object().shape({
   name: Yup.string()
-    .required("Name is required")
-    .min(4, "Name must be at least 4 characters")
-    .max(20, "Name cannot be more than 20 characters"),
+    .required("product name is required")
+    .min(4, "product name must be at least 4 characters")
+    .max(30, "product name cannot be more than 20 characters"),
   description: Yup.string()
     .required("Description is required")
     .min(100, "Description must be at least 100 characters")
-    .max(200, "Description cannot be more than 200 characters"),
+    .max(600, "Description cannot be more than 600 characters"),
   price: Yup.number()
     .required("Price is required")
     .positive("Price must be a positive number")
@@ -52,11 +52,11 @@ export const productSchema = Yup.object().shape({
   brand: Yup.string()
     .required("brand is required")
     .min(4, "brand must be at least 4 characters")
-    .max(20, "brand cannot be more than 20 characters"),
+    .max(40, "brand cannot be more than 40 characters"),
   category: Yup.string()
     .required("category is required")
     .min(4, "category must be at least 4 characters")
-    .max(20, "category cannot be more than 20 characters"),
+    .max(40, "category cannot be more than 40 characters"),
 });
 
 export const placeOderSchema = Yup.object().shape({
