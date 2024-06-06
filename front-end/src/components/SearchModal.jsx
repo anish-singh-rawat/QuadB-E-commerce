@@ -25,7 +25,7 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ openModal, handleCloseModal }) {
+export default function SearchModal({ openModal, handleCloseModal }) {
   const [addItemId, setAddItemId] = React.useState(null);
   const [filterItems, setFilterItems] = React.useState([]);
   const { posts } = useSelector((state) => state.getProducts);
@@ -116,7 +116,7 @@ export default function BasicModal({ openModal, handleCloseModal }) {
                   <div className="relative">
                     <img
                       src={product?.imagePath}
-                      alt={product?.filename}
+                      alt={product?.name}
                       className="w-full h-48"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition">

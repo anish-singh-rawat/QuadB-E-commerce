@@ -21,7 +21,6 @@ const AdminProducts = () => {
     const getAllProduct = async () => {
         const res = await dispatch(GetProduct());
         setProductsElements(res?.payload?.products)
-        console.log('calling pr')
     }
 
     const removeItem = async (_id) => {
@@ -31,7 +30,6 @@ const AdminProducts = () => {
         }
         try {
             const res = await dispatch(deleteCartItem(payload));
-            console.log(res, 'sss')
             if (res.payload?.success === true) {
                 toast.success(res?.payload?.messsage)
             } else {
@@ -61,7 +59,7 @@ const AdminProducts = () => {
                         <div className="relative">
                             <img
                                 src={product?.imagePath}
-                                alt={product?.filename}
+                                alt={product?.name}
                                 className='w-full h-48'
                             />
                         </div>

@@ -78,7 +78,7 @@ const AllProduct = () => {
           <div className="relative">
             <img
               src={product?.imagePath}
-              alt={product?.filename}
+              alt={product?.name}
               className='w-full h-48'
             />
             <div

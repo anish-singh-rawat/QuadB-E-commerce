@@ -29,7 +29,7 @@ const inputElement = [
 const inputElement2 = [
     {
         name: "price",
-        placeHolder: "product price",
+        placeHolder: "product price $",
         type: "text",
     },
     {

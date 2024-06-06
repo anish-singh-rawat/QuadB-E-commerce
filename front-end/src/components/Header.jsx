@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState , useRef } from 'react';
 import { FaSearch } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,6 +15,9 @@ import SearchModal from './SearchModal';
 const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
+
   const registerData = useSelector((state) => state.register)
   const cartData = useSelector((state) => state.cart)
   const dispatch = useDispatch();
@@ -46,8 +49,10 @@ const Header = () => {
     userData = jwtDecode(token);
   }
   const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
-
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setInputValue('');
+  };
   useEffect(() => {
     token = Cookies.get('token')
     if (token !== undefined && token !== null) { 
@@ -55,6 +60,12 @@ const Header = () => {
     } 
   }, [cartData.data?.cart?.cartItems?.length, cartData.data?.cart?.cartItems?.__v, token, registerData?.data?.success == true, cartData?.data?.success == true])
 
+  useEffect(() => {
+    if (!openModal && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }, [openModal]);
+  
   return (
     <>
       <header className="py-4 bg-gray-100 shadow-xl sticky top-0 z-50">
@@ -92,8 +103,14 @@ const Header = () => {
             <div  className="relative flex mt-4 w-96 md:w-96 md:mt-0 md:ml-4 order-last md:order-none">
               <input type="text" name="search" id="search" 
                 className="w-full  md:w-96 border border-primary border-r-0  py-3 pr-3 rounded-l-md focus:ring-0 focus:border-primary" 
-                placeholder="Search products by name.." onChange={handleOpenModal}
-                onClick={handleOpenModal} onKeyPress={handleOpenModal}
+                placeholder="Search products by name.."  onChange={(e) => {
+                  setInputValue(e.target.value);
+                  handleOpenModal();
+                }}
+                onClick={handleOpenModal}
+                onKeyPress={handleOpenModal}
+                ref={inputRef}
+                value={inputValue}
               />
               <button  onClick={handleOpenModal} className="bg-primary border border-primary text-white px-8 rounded-r-md hover:bg-transparent hover:text-primary transition">
                 <FaSearch />
