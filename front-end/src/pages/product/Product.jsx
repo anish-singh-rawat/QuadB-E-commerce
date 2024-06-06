@@ -12,8 +12,8 @@ const Product = () => {
     const singleProductData = useSelector((state) => state.singleProduct)
     const getsingleProductData = async () => {
        const res =  await dispatch(singleProduct(id))
-        if(res.error.message == "Rejected"){
-            toast.error(res.payload.message)
+        if(res?.error?.message == "Rejected"){
+            toast?.error(res?.payload?.message)
         }
     }
     useEffect(() => {
@@ -23,7 +23,7 @@ const Product = () => {
     return (
         <div className="container grid grid-cols-1 mt-7 mb-7 md:grid-cols-2 gap-6 py-4">
             {
-                singleProductData.status === "loading" &&
+                singleProductData?.status === "loading" &&
                 <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                     open={true}>
                     <CircularProgress color="inherit" />
