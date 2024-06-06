@@ -48,7 +48,15 @@ export const productSchema = Yup.object().shape({
   quantity: Yup.number()
     .required("Quantity is required")
     .positive("Quantity must be a positive number")
-    .moreThan(0, "Quantity must be greater than 0")
+    .moreThan(0, "Quantity must be greater than 0"),
+  brand: Yup.string()
+    .required("brand is required")
+    .min(4, "brand must be at least 4 characters")
+    .max(20, "brand cannot be more than 20 characters"),
+  category: Yup.string()
+    .required("category is required")
+    .min(4, "category must be at least 4 characters")
+    .max(20, "category cannot be more than 20 characters"),
 });
 
 export const placeOderSchema = Yup.object().shape({

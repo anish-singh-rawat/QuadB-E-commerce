@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import { AddProduct } from '../../redux/slices/productsSlice';
 import Cookies from "js-cookie"
 import { productSchema } from '../../validations';
-import { useParams , useNavigate} from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { singleProduct } from '../../redux/slices/SignleProduct';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -23,6 +23,10 @@ const inputElement = [
         placeHolder: "product description",
         type: "text",
     },
+
+];
+
+const inputElement2 = [
     {
         name: "price",
         placeHolder: "product price",
@@ -33,7 +37,17 @@ const inputElement = [
         placeHolder: "product quantity",
         type: "text",
     },
-];
+    {
+        name: "brand",
+        placeHolder: "product brand",
+        type: "text",
+    },
+    {
+        name: "category",
+        placeHolder: "product category",
+        type: "text",
+    },
+]
 
 const SellProduct = () => {
     const [fileData, setFileData] = useState([])
@@ -42,7 +56,7 @@ const SellProduct = () => {
     const updateditemData = useSelector((state) => state.updateProduct)
     const navigate = useNavigate();
 
-    const { setValues, values, errors, touched,resetForm, handleChange, handleBlur, handleSubmit, setFieldValue } =
+    const { setValues, values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit, setFieldValue } =
         useFormik({
             initialValues: {
                 name: "",
@@ -50,6 +64,8 @@ const SellProduct = () => {
                 price: "",
                 quantity: "",
                 uploadfile: "",
+                brand : "",
+                category : "",
             },
             validationSchema: productSchema,
             onSubmit: async (values, { resetForm }) => {
@@ -60,7 +76,9 @@ const SellProduct = () => {
                     quantity: values.quantity,
                     imagePath: fileData.imagePath,
                     filename: fileData.filename,
-                    originalname: fileData.originalname
+                    originalname: fileData.originalname,
+                    brand : values.brand,
+                    category :values.category,
                 };
                 try {
                     const res = await dispatch(AddProduct(payload));
@@ -107,13 +125,15 @@ const SellProduct = () => {
 
     const getProductsdetails = async () => {
         const { payload } = await dispatch(singleProduct(id))
-        const { name, filename, description, imagePath, price, quantity } = payload.product;
+        const { name, filename, description, imagePath, price, quantity , brand ,category } = payload.product;
         setValues({
             name: name,
             price: price,
             uploadfile: imagePath,
             quantity: quantity,
-            description: description
+            description: description,
+            brand : brand,
+            category :category,
         });
         setFileData({
             imagePath: imagePath,
@@ -127,15 +147,17 @@ const SellProduct = () => {
             description: values?.description,
             price: values?.price,
             quantity: values?.quantity,
-            productId : id
+            brand : values?.brand,
+            category :values?.category,
+            productId: id
         }
-        const {payload} = await dispatch(updateCartDetails(payloadData))
-        if(payload.success === true) {
+        const { payload } = await dispatch(updateCartDetails(payloadData))
+        if (payload.success === true) {
             toast.success(payload?.message)
             resetForm();
             setFileData([]);
             navigate('/')
-        }else{
+        } else {
             toast.error(payload?.message)
         }
     }
@@ -201,6 +223,30 @@ const SellProduct = () => {
                                 ) : null}
                             </div>
                         ))}
+                        
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                        {inputElement2.map((input, i) => (
+                            <div key={i}>
+                                <label htmlFor="name" className="text-gray-600 mb-1 block">
+                                    {input.placeHolder}
+                                </label>
+                                <input
+                                    type={input.type}
+                                    name={input.name}
+                                    value={values[input.name]}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                                    placeholder={input.placeHolder}
+                                />
+                                {errors[input.name] && touched[input.name] ? (
+                                    <div className="text-red-500 text-[12px] italic">{errors[input.name]}</div>
+                                ) : null}
+                            </div>
+                        ))}
+                        </div>
+
+
                         <button
                             type="submit"
                             className="block w-full py-2 text-center bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium mt-4"

@@ -36,14 +36,16 @@ const Product = () => {
                 <div className="space-y-2">
                     <p className="space-x-2">
                         <span className="text-gray-800 font-semibold">Brand: </span>
-                        <span className="text-gray-600">Apex</span>
+                        <span className="text-gray-600">{singleProductData?.data?.product?.brand}</span>
                     </p>
                     <p className="space-x-2">
                         <span className="text-gray-800 font-semibold">quantity : {singleProductData?.data?.product?.quantity} </span>
                     </p>
                     <p className="space-x-2">
                         <span className="text-gray-800 font-semibold">Category: </span>
-                        <span className="text-gray-600">Sofa</span>
+                        <span className="text-gray-600">
+                            {singleProductData?.data?.product?.category}
+                        </span>
                     </p>
                 </div>
                 <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
