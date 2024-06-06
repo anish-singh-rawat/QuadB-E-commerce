@@ -4,19 +4,21 @@ import { singleProduct } from "../../redux/slices/SignleProduct";
 import { useDispatch, useSelector } from "react-redux"
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import {toast} from "react-toastify"
 const Product = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
     const singleProductData = useSelector((state) => state.singleProduct)
     const getsingleProductData = async () => {
-        await dispatch(singleProduct(id))
+       const res =  await dispatch(singleProduct(id))
+        if(res.error.message == "Rejected"){
+            toast.error(res.payload.message)
+        }
     }
     useEffect(() => {
         getsingleProductData();
     }, [id])
-    console.log()
 
     return (
         <div className="container grid grid-cols-1 mt-7 mb-7 md:grid-cols-2 gap-6 py-4">
